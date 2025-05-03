@@ -5,46 +5,60 @@
 import csv
 import os
 
-# Files to load and output (update with correct file paths)
-file_to_load = os.path.join("Resources", "election_data.csv")  # Input file path
-file_to_output = os.path.join("analysis", "election_analysis.txt")  # Output file path
+# Files to load and output
+file_to_load = os.path.join("Modules:HW", "3", "python-challenge", "PyPoll", "Resources", "election_data.csv")
+file_to_output = os.path.join("Modules:HW", "3", "python-challenge", "PyPoll", "analysis", "election_analysis.txt")
 
-# Initialize variables to track the election data
-total_votes = 0  # Track the total number of votes cast
+# Initialize variables
+total_votes = 0
+candidate_list = []                 # Tracks unique candidates
+candidate_votes = {}               # Tracks vote count per candidate
+winning_candidate = ""
+winning_votes = 0
 
-# Define lists and dictionaries to track candidate names and vote counts
-
-
-# Winning Candidate and Winning Count Tracker
-
-
-# Open the CSV file and process it
+# Read the CSV file
 with open(file_to_load) as election_data:
     reader = csv.reader(election_data)
-
-    # Skip the header row
     header = next(reader)
 
-    # Loop through each row of the dataset and process it
     for row in reader:
+        total_votes += 1
+        candidate_name = row[2]     # Index 2 for candidate name in election_data.csv
 
-        # Print a loading indicator (for large datasets)
-        print(". ", end="")
+        if candidate_name not in candidate_list:
+            candidate_list.append(candidate_name)
+            candidate_votes[candidate_name] = 0
 
-        # Increment the total vote count for each row
+        candidate_votes[candidate_name] += 1
 
+# Prepare results
+results = []
+results.append("Election Results")
+results.append("-------------------------")
+results.append(f"Total Votes: {total_votes}")
+results.append("-------------------------")
 
-        # Get the candidate's name from the row
+for candidate in candidate_votes:
+    votes = candidate_votes[candidate]
+    vote_percentage = (votes / total_votes) * 100
+    results.append(f"{candidate}: {vote_percentage:.3f}% ({votes})")
 
+    if votes > winning_votes:
+        winning_votes = votes
+        winning_candidate = candidate
 
-        # If the candidate is not already in the candidate list, add them
+results.append("-------------------------")
+results.append(f"Winner: {winning_candidate}")
+results.append("-------------------------")
 
+# Print results
+for line in results:
+    print(line)
 
-        # Add a vote to the candidate's count
-
-
-# Open a text file to save the output
+# Save to file
 with open(file_to_output, "w") as txt_file:
+    for line in results:
+        txt_file.write(line + "\n")
 
     # Print the total vote count (to terminal)
 
